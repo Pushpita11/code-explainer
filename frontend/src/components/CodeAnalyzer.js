@@ -360,7 +360,7 @@ int main() {
 const CodeAnalyzer = () => {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('javascript');
-  const [explanation, setExplanation] = useState('');
+  const [explanation, setExplanation] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
@@ -487,11 +487,7 @@ const CodeAnalyzer = () => {
         setError(response.data.error);
       } else {
         // Use full_explanation first (comprehensive), then summary as fallback
-        const explanation = response.data.full_explanation || 
-                            response.data.summary ||
-                            response.data.user_friendly_summary ||
-                            'No explanation was generated.';
-        setExplanation(explanation);
+        setExplanation(response.data);
       }
       
       setLoading(false);
