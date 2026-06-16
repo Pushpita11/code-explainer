@@ -14,7 +14,9 @@ from app.analyzers.cpp_analyzer import analyze_cpp
 
 # Import NLP-based analyzer
 from app.nlp.api import analyze_code_nlp, format_explanation
-
+from app.quality_analyzer import calculate_quality_score
+from app.security_analyzer import analyze_security
+from app.complexity_analyzer import analyze_complexity
 app = Flask(__name__)
 CORS(app)
 
@@ -48,10 +50,17 @@ def explain_code():
             if (model_name and model_name.lower() in ['gemini', 'gemini-1.5-flash', 'gemini-flash', 'google-gemini']) or \
                (explanation_result.get('metadata', {}).get('provider') == 'google'):
                 # Gemini responses are already properly formatted
-                return jsonify(explanation_result)
+               explanation_result["quality_score"] = calculate_quality_score(code)
+               explanation_result["security"] = analyze_security(code)
+               explanation_result["complexity"] = analyze_complexity(code)
+
+               return jsonify(explanation_result)
             else:
                 # Traditional NLP models need formatting
                 formatted_explanation = format_explanation(explanation_result)
+                formatted_explanation["quality_score"] = calculate_quality_score(code)
+                formatted_explanation["security"] = analyze_security(code)
+                formatted_explanation["complexity"] = analyze_complexity(code)
                 return jsonify(formatted_explanation)
         else:
             # Use rule-based analysis
@@ -70,7 +79,7 @@ def explain_code():
                     "error": f"Language {language} is not supported. Supported languages: python, javascript, java, c++"
                 }), 400
             
-            # Format rule-based analysis to match NLP format
+                        # Format rule-based analysis to match NLP format
             if isinstance(explanation_result, str):
                 # Legacy format - convert to structured format
                 formatted_result = {
@@ -91,7 +100,11 @@ def explain_code():
             else:
                 # New structured format
                 formatted_result = explanation_result
-                
+
+            formatted_result["quality_score"] = calculate_quality_score(code)
+            formatted_result["security"] = analyze_security(code)
+            formatted_result["complexity"] = analyze_complexity(code)
+
             return jsonify(formatted_result)
     
     except Exception as e:

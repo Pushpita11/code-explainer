@@ -256,6 +256,12 @@ npm run build
 
 **Issue**: Port already in use
 - **Solution**: Kill the process using the port or change the port in `.env` file
+## Enhancements by Pushpita
+
+- Added Code Quality Score
+- Added Security Risk Detection
+- Added Complexity Analysis
+- Improved AI-generated code insights
 
 ## 🤝 Contributing
 
@@ -285,7 +291,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Piyush  Yadav**
 [piyush yadav](https://piyushyadav.me)
+## 🚀 Enhancements & Maintenance
 
+**Pushpita Kundu**  
+GitHub: https://github.com/Pushpita11
 ## ⭐ Show Your Support
 
 Give a ⭐️ if this project helped you!

@@ -15,7 +15,13 @@ import SyncIcon from '@mui/icons-material/Sync';
 
 const CodeExplanation = ({ explanation, loading }) => {
   // Split explanation into lines for better formatting
-  const lines = explanation ? explanation.split('\n') : [];
+  const explanationText =
+  explanation?.full_explanation ||
+  explanation?.summary ||
+  explanation?.user_friendly_summary ||
+  '';
+
+const lines = explanationText.split('\n');
 
   // Group explanation sections
   const sections = groupExplanationSections(lines);
@@ -125,6 +131,49 @@ const CodeExplanation = ({ explanation, loading }) => {
         </Box>
       ) : (
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+        {explanation?.quality_score && (
+  <Paper sx={{ p: 2, mb: 2 }}>
+    <Typography variant="h6">
+      Quality Score: {explanation.quality_score.score}/100
+    </Typography>
+
+    {explanation.quality_score.suggestions.map((item, i) => (
+      <Typography key={i}>
+        • {item}
+      </Typography>
+    ))}
+  </Paper>
+)}
+
+{explanation?.security && (
+  <Paper sx={{ p: 2, mb: 2 }}>
+    <Typography variant="h6">
+      Security Risks: {explanation.security.risk_count}
+    </Typography>
+
+    {explanation.security.risks.map((item, i) => (
+      <Typography key={i}>
+        ⚠ {item}
+      </Typography>
+    ))}
+  </Paper>
+)}
+
+{explanation?.complexity && (
+  <Paper sx={{ p: 2, mb: 2 }}>
+    <Typography variant="h6">
+      Complexity Score: {explanation.complexity.complexity_score}
+    </Typography>
+
+    <Typography>
+      Functions: {explanation.complexity.functions}
+    </Typography>
+
+    <Typography>
+      Loops: {explanation.complexity.loops}
+    </Typography>
+  </Paper>
+)}
           {sections.map((section, sectionIndex) => (
             <Accordion 
               key={sectionIndex} 
